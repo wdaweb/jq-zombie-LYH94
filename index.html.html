@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      background-image: url(./images/planet.gif);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    #btn {
+      width: 200px;
+      height: 400px;
+      float: left;
+      text-align: center;
+      background-color: rgba(0, 38, 255, 0.5);
+      margin-left: 20%;
+    }
+    #game {
+      height: 400px;
+      width: 400px;
+      background: rgba(255,255,255,0.8);
+      cursor: url(./images/ufo.png) 10 10, auto;
+      float: left;
+      overflow: hidden;
+      position: relative;
+    }
+    #game img {
+      position: absolute;
+      height: 150px;
+      clear: both;
+    }
+    #alienpic img {
+      width: 110px;
+      height: 150px;
+      margin-top: 10%;
+    }
+    .button {
+      background-color: #555555;
+      padding: 5px 10px;
+      color: #03f40f;
+      margin-top: 10%;
+      transition: 0.5s;
+    }
+    .button:hover {
+      background: rgba(228, 244, 3);
+      color: white;
+    }
+    p {
+        color: rgb(255,255,255);
+      }
+
+  </style>
+</head>
+<body>
+  <div id="main">
+    <div id="btn">
+      <div id="alienpic">
+        <img src="./images/alien.gif" alt="">
+      </div>
+        <input type="button" value="開始遊戲" id="btn-start" class="button">
+      <p>分數: <span id="text-score">0</span> 分</p>
+      <p>剩餘: <span id="text-time">30</span> 秒</p>
+    </div>
+    <div id="game"></div>
+  </div>
+  <script src="./jquery-3.5.1.min.js"></script>
+  <script>
+    let score = 0
+    let timeleft = 30
+
+    let id = 0
+
+    const rand = (num) => {
+      return Math.floor(Math.random()*num)
+    }
+
+    const movecow = (id) => {
+      $(`#movingcow${id}`).animate({
+        left: rand(70) + "%",
+        top: rand(70) + "%"
+      }, 5000, function(){
+        movecow(id)
+      })
+    }
+
+    $('#btn-start').click(function(){
+      $('#btn-start').attr('disabled', true)
+
+      score = 0
+      $('#text-score').text(score)
+      timeleft = 30
+      $('#text-time').text(timeleft)
+
+      let timer = setInterval(function(){
+        timeleft--
+        $('#text-time').text(timeleft)
+
+        if(timeleft === 0) {
+          clearInterval(timer)
+          $('#btn-start').attr('disabled', false)
+          $('#game img').remove()
+          setTimeout(() => {
+            alert('時間到')
+          }, 50)
+        } else {
+          if(rand(10) > 5) {
+            $('#game').append(`<img src="./images/movingcow.gif" id="movingcow${id}">`)
+            $(`#movingcow${id}`).css({
+              left: rand(70) + "%",
+              top: rand(70) + "%"
+            })
+            movecow(id)
+            id++
+          }
+        }
+
+      }, 1000)
+    })
+
+    $("#game").on('click', 'img', function(){
+      $(this).attr('src', './images/ufocow.gif')
+      $(this).stop(true, false)
+      $(this).css('pointer-events', 'none')
+      score++
+      $('#text-score').text(score)
+    })
+  </script>
+</body>
+</html>
